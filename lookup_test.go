@@ -1,6 +1,9 @@
 package lookup
 
-import "testing"
+import (
+	"math/rand"
+	"testing"
+)
 
 func TestNew(t *testing.T) {
 	threshold := 3
@@ -73,4 +76,29 @@ func TestWithSize(t *testing.T) {
 		var zero int
 		AssertMapCount(t, set.inner, zero, 0)
 	})
+}
+
+func TestEmptyLookup(t *testing.T) {
+	tests := []struct {
+		name string
+		elements []int
+	}{
+		{
+			name: "empty slice elements",
+			elements: []int{},
+		},
+		{
+			name: "nil slice elements",
+			elements: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lookup := New(3, tt.elements)
+			if got := lookup.Has(rand.Int()); got {
+				t.Errorf(`Has() = true, want false`)
+			}
+		})
+	}
 }
